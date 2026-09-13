@@ -12,26 +12,53 @@ const jwt=require('jsonwebtoken');
  * @description Controller to handle user login
  * @route POST /api/auth/login
  * @access Public
- */
-async function loginController(req,res){
+//  */
 
-    const {email,password}=req.body;
+async function loginController(req, res) {
 
+    const { email, password } = req.body;
 
-    const user= await userModel.findOne({email:email});
-    if(!user){
-        return res.status(400).json({message:"incorrect email"});
+    console.log("EMAIL FROM FRONTEND:", email);
+
+    const user = await userModel.findOne({ email: email });
+
+    if (!user) {
+        return res.status(400).json({
+            message: "incorrect email"
+        });
     }
-    const isPasswordMatch= await bcrypt.compare(password,user.password);
-    if(!isPasswordMatch){
-        return res.status(400).json({message:"incorrect password"});
-    }   
-    
-    
-    const token=jwt.sign({id:user._id},process.env.JWT_SECRET_KEY,{expiresIn:'1h'});
-    res.cookie('token', token, {httpOnly: true, maxAge: 60 * 60 * 1000});
-    return res.status(200).json({message:"User logged in successfully",token});
 
+    const isPasswordMatch = await bcrypt.compare(
+        password,
+        user.password
+    );
+
+    if (!isPasswordMatch) {
+        return res.status(400).json({
+            message: "incorrect password"
+        });
+    }
+
+    const token = jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: '1h' }
+    );
+
+    res.cookie('token', token, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 1000
+    });
+
+    return res.status(200).json({
+        message: "User logged in successfully",
+        token,
+        user: {
+            id: user._id,
+            email: user.email,
+            username: user.username
+        }
+    });
 }
 
 
