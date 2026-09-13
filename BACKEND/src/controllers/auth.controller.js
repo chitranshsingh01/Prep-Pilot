@@ -6,7 +6,6 @@ const jwt=require('jsonwebtoken');
 
 
 
-
 /** 
  * @name loginController
  * @description Controller to handle user login
