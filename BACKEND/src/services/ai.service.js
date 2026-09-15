@@ -35,6 +35,7 @@ const ai =new GoogleGenAI({
 })).describe("A day-wise preparation plan for the candidate to follow in order to improve their skills and prepare for the interview")
  })
 
+
  async function generateinterviewReport({ resume,selfDescription,jobDescription }){
 
     const prompt = `Generate a interview report for the candidate with following details:
@@ -44,7 +45,7 @@ const ai =new GoogleGenAI({
 
 
     const response=await ai.interactions.create({
-        model:"gemini-3.6-flash",
+        model:"gemini-3.5-flash-lite",
         input:prompt,
          response_format: {
             type: "text",
@@ -55,12 +56,8 @@ const ai =new GoogleGenAI({
 
      const report = JSON.parse(response.output_text);
 
-    console.log(report);
+    // console.log(JSON.stringify(report, null, 2));
+    return report;
 }
 
 module.exports=generateinterviewReport
-
-
-
-
-

@@ -3,6 +3,7 @@ import Login from './features/auth/pages/Login'
 import Register from './features/auth/pages/Register'
 import Protected from './features/auth/components/protected'
 
+
 const router = createBrowserRouter([
   {
     path: '/',

@@ -149,6 +149,11 @@ const interviewreportSchema =new mongoose.Schema({
     skillGaps:[skillgapsSchema],
     preparationPlan:[preparationplanSchema],
 
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"users"
+    }
+
 
 
 },{
