@@ -89,9 +89,14 @@ const handleLogin = async ({ email, password }) => {
 
             useEffect(()=>{
              const getsetUser= async()=>{
-                const data=await getme();
-                setUser(data.user);
-                setLoading(false);
+                try{
+                    const data=await getme();
+                    setUser(data.user);
+                }catch(err){
+
+                }finally{
+                    setLoading(false);
+                }
              }
              
              getsetUser();

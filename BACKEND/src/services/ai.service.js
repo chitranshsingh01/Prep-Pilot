@@ -6,7 +6,6 @@ const ai =new GoogleGenAI({
 })
 
 
-
     const interviewReportSchema = z.object({
 
         matchScore:z.number().describe("A score between 0 ans 100 indicating how well the candidates profile matches the job describe"),
@@ -32,16 +31,20 @@ const ai =new GoogleGenAI({
     day: z.number().describe("The day number in the preparation plan, starting from 1"),
     focus: z.string().describe("The main focus of this day in the preparation plan, e.g. data structures, algorithms, or system design"),
     tasks: z.array(z.string()).describe("List of tasks to be done on this day to follow the preparation plan")
-})).describe("A day-wise preparation plan for the candidate to follow in order to improve their skills and prepare for the interview")
+})).describe("A day-wise preparation plan for the candidate to follow in order to improve their skills and prepare for the interview"),
+    
+    title:z.string().describe("the title of the job for which the report is generated")
+ 
  })
 
 
- async function generateinterviewReport({ resume,selfDescription,jobDescription }){
+ async function generateinterviewReport({ resume,selfDescription,jobDescription,title }){
 
     const prompt = `Generate a interview report for the candidate with following details:
     Resume:${resume}
     Self Description:${selfDescription}
-    Job Description${jobDescription}`
+    Job Title:${title}
+    Job Description:${jobDescription}`
 
 
     const response=await ai.interactions.create({
@@ -55,8 +58,7 @@ const ai =new GoogleGenAI({
     })
 
      const report = JSON.parse(response.output_text);
-
-    // console.log(JSON.stringify(report, null, 2));
+     
     return report;
 }
 
