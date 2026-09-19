@@ -46,9 +46,10 @@ export const useInterview=()=>{
         let response=null;
         try{
              response=await getAllinterviewReports();
-            setreports(response.interviewReports)
+            setreports(Array.isArray(response?.interviewReports) ? response.interviewReports : [])
         }catch(err){
-            console.log(err)
+            setreports([])
+            console.error("Failed to fetch interview reports:", err.response?.data?.message || err.message)
         }finally{
             setloading(false);
         }

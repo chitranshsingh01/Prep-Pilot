@@ -1,15 +1,19 @@
-import React,{ useState,useRef} from 'react'
+import React,{ useEffect, useState,useRef} from 'react'
 import '../style/home.scss'
 import { useInterview } from '../hooks/useInterview'
 import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
 
-    const { loading, generateReport } = useInterview()
+    const { loading, generateReport,getReports,reports } = useInterview()
     const [jobDescription, setJobDescription] = useState("")
     const [selfDescription, setSelfDescription] = useState("")
     const resumeInputRef = useRef()
     const navigate=useNavigate();
+
+    useEffect(() => {
+        getReports();
+    }, []);
 
     const handleGenerateReport=async()=>{
         const resumeFile=resumeInputRef.current.files[0];
@@ -22,7 +26,7 @@ const Home = () => {
     if(loading){
         return (
             <main>
-                <h1>LOADING......</h1>
+                <h1>Loading......</h1>
             </main>
         )
     }
@@ -50,6 +54,28 @@ const Home = () => {
             </button>
         </div>
         </div>
+        
+       <section className='recent-reports'>
+        <h2>My Recent Interview Plans</h2>
+        {reports.length === 0 ? (
+            <p>No interview reports found.</p>
+        ) : (
+        <ul className='reports-list'>
+            {reports.map(report => (
+                <li
+                    key={report._id}
+                    className='report-item'
+                    onClick={() => navigate(`/interview/${report._id}`)}
+                >
+                    <h3>{report.title || "Untitled Position"}</h3>
+                    <p className='report-meta'>
+                        Generated on {new Date(report.createdAt).toLocaleDateString()}
+                    </p>
+                </li>
+            ))}
+        </ul>
+        )}
+    </section>
     </main>
   )
 }
