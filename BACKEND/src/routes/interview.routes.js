@@ -28,6 +28,13 @@ interviewRouter.get("/report/:interviewId",authMiddleware.authUser,interviewCont
 interviewRouter.get("/",authMiddleware.authUser,interviewController.getAllInterviewReportsController)
 
 
+/**
+ * @route Get/api/interview/report
+ * @description genrate resume in pdf
+ */
+interviewRouter.post("/resume/pdf/:interviewReportId", authMiddleware.authUser,interviewController.generateResumePdfController);
+
+
 
 
 

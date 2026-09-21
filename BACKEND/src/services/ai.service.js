@@ -1,5 +1,6 @@
 const { GoogleGenAI }=require("@google/genai");
 const { z }=require("zod");
+const puppeteer = require("puppeteer");
 
 const ai =new GoogleGenAI({
     apiKey:process.env.GOOGLE_GENAI_API_KEY
@@ -62,4 +63,59 @@ const ai =new GoogleGenAI({
     return report;
 }
 
-module.exports=generateinterviewReport
+
+async function genratePdfFromHtml(htmlContent){
+
+
+        const browser = await puppeteer.launch();
+
+        const page = await browser.newPage();
+
+    await page.setContent(htmlContent, {
+        waitUntil: "networkidle0"
+    });
+
+      const pdfBuffer = await page.pdf({
+        format: "A4",
+        printBackground: true
+    });
+     await browser.close();
+
+     return pdfBuffer;
+}
+
+
+async function genrateResumePdf({resume,selfDescription,jobDescription,title}){
+
+    const resumepdfSchema =z.object({
+        html:z.string().describe("the html content of resume that can be converted to the pdf using library function")
+    });
+
+    const prompt=`Genrate a resume for a candidate with the following details-
+                   resume : ${resume},
+                   selfDescription:${selfDescription},
+                   jobDescription:${jobDescription},
+                   the format should be a json object with a single field "html" which contains the html contentt of resume which can be converted into the pdf later
+                   the resume should be for the given job description and should highlight the candidates strenght and relevant experince, HTML should be well formatted and strcutured , easy to read
+                   the content of the resume should not be sound like genrated by ai and should be like a human written,
+                   you can highlight the content using some colors of diffrent font style
+                   `
+
+                   const response=await ai.interactions.create({
+                     model:"gemini-3.5-flash-lite",
+                     input:prompt,
+                     response_format:{
+                        type: "text",
+                        mime_type: 'application/json',
+                        schema: z.toJSONSchema(resumepdfSchema)
+                     }
+                   })
+
+                   const jsonContent=JSON.parse(response.output_text);
+
+                   const pdfBuffer=await genratePdfFromHtml(jsonContent.html)
+                    return pdfBuffer;
+
+}
+
+module.exports={generateinterviewReport ,genrateResumePdf }
