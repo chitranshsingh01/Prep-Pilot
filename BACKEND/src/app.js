@@ -7,7 +7,7 @@ const app= express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: 'prep-pilot-7j3oe3qhb-stfu3.vercel.app',
+    origin: 'https://prep-pilot-7j3oe3qhb-stfu3.vercel.app',
     credentials: true
 }));
 
