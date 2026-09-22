@@ -52,3 +52,17 @@ export const getAllinterviewReports=async()=>{
     return response.data;
 
 }
+
+/**
+ * 
+ * @description to genrate resume pdf  
+ */
+
+
+export const generateResumePdf=async(interviewId)=>{
+
+    const response =await api.post(`/api/interview/resume/pdf/${interviewId}`,null,{
+        responseType:"blob"
+    })
+    return response.data;
+}
